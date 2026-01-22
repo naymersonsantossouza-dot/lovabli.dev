@@ -2,46 +2,75 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>App Financeiro</title>
+  <title>Finance</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- Supabase -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+  <!-- Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600&display=swap');
+    :root {
+      --bg: #0f172a;
+      --card: #020617;
+      --primary: #2563eb;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      transition: all .3s ease;
+    }
 
     body {
-      font-family: 'Lexend', sans-serif;
-      background: #0f172a;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
       margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: linear-gradient(180deg, #020617, #0f172a);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    .box {
-      background: #020617;
-      padding: 30px;
-      border-radius: 20px;
+    .card {
+      background: var(--card);
       width: 100%;
-      max-width: 360px;
-      box-shadow: 0 20px 40px rgba(0,0,0,.5);
-      animation: fade .4s ease;
+      max-width: 420px;
+      padding: 28px;
+      border-radius: var(--radius);
+      box-shadow: 0 20px 60px rgba(0,0,0,.4);
+      animation: fadeUp .5s ease;
     }
 
-    h2 {
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
+      font-size: 1.6rem;
     }
 
     input {
       width: 100%;
       padding: 14px;
       border-radius: 12px;
-      border: 1px solid #334155;
-      background: #020617;
-      color: white;
+      border: none;
       margin-bottom: 12px;
+      background: #020617;
+      color: var(--text);
+      outline: 1px solid #1e293b;
+    }
+
+    input:focus {
+      outline: 1px solid var(--primary);
     }
 
     button {
@@ -49,31 +78,31 @@
       padding: 14px;
       border-radius: 14px;
       border: none;
-      background: #2563eb;
+      background: var(--primary);
       color: white;
       font-weight: 600;
       cursor: pointer;
-      margin-bottom: 8px;
+      margin-top: 6px;
     }
 
-    button.secondary {
-      background: #1e293b;
+    button:hover {
+      filter: brightness(1.1);
     }
 
-    .status {
-      font-size: 13px;
+    .link {
       text-align: center;
-      margin-top: 10px;
-      opacity: .8;
+      margin-top: 16px;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .link span {
+      color: #60a5fa;
+      font-weight: 600;
     }
 
     .hidden {
       display: none;
-    }
-
-    @keyframes fade {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -81,110 +110,105 @@
 <body>
 
   <!-- LOGIN -->
-  <div class="box" id="login-box">
-    <h2>Login</h2>
-    <input id="login-email" type="email" placeholder="Email">
-    <input id="login-password" type="password" placeholder="Senha">
+  <div class="card" id="login">
+    <h1>Entrar</h1>
+    <input id="login-email" type="email" placeholder="E-mail" />
+    <input id="login-password" type="password" placeholder="Senha" />
     <button onclick="login()">Entrar</button>
-    <button class="secondary" onclick="showSignup()">Criar conta</button>
-    <div class="status" id="login-status"></div>
+    <div class="link" onclick="toggle()">
+      Não tem conta? <span>Criar conta</span>
+    </div>
   </div>
 
   <!-- CADASTRO -->
-  <div class="box hidden" id="signup-box">
-    <h2>Criar conta</h2>
-    <input id="signup-email" type="email" placeholder="Email">
-    <input id="signup-password" type="password" placeholder="Senha">
-    <button onclick="signup()">Cadastrar</button>
-    <button class="secondary" onclick="showLogin()">Voltar</button>
-    <div class="status" id="signup-status"></div>
+  <div class="card hidden" id="signup">
+    <h1>Criar conta</h1>
+    <input id="name" placeholder="Nome completo" />
+    <input id="email" type="email" placeholder="E-mail" />
+    <input id="phone" placeholder="Telefone (xx xxxxx-xxxx)" />
+    <input id="password" type="password" placeholder="Senha segura" />
+    <input id="invite" placeholder="Código de convite" />
+    <button onclick="signup()">Criar conta</button>
+    <div class="link" onclick="toggle()">
+      Já tem conta? <span>Entrar</span>
+    </div>
   </div>
 
-  <!-- DASHBOARD -->
-  <div class="box hidden" id="app-box">
-    <h2>Bem-vindo 👋</h2>
-    <p style="text-align:center;font-size:14px;">Login realizado com sucesso</p>
-    <button onclick="logout()">Sair</button>
-  </div>
+<script>
+  const SUPABASE_URL = "https://ofmtqwwnhknnjpbddduj.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_O-AwL40Ai_GDQgiRnSfmFw_j-FfpFZM";
 
-  <!-- SUPABASE -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  const supabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
 
-  <script>
-    // 🔑 CONFIGURAÇÃO SUPABASE
-    const SUPABASE_URL = "https://ofmtqwwnhknnjpbddduj.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_O-AwL40Ai_GDQgiRnSfmFw_j-FfpFZM";
+  function toggle() {
+    document.getElementById("login").classList.toggle("hidden");
+    document.getElementById("signup").classList.toggle("hidden");
+  }
 
-    const supabase = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
+  async function signup() {
+    const name = nameInput.value;
+    const email = emailInput.value;
+    const phone = phoneInput.value;
+    const password = passwordInput.value;
+    const invite = inviteInput.value;
 
-    // 🔁 TELAS
-    function showSignup() {
-      document.getElementById("login-box").classList.add("hidden");
-      document.getElementById("signup-box").classList.remove("hidden");
+    if (!name || !email || !phone || !password || !invite) {
+      alert("Preencha todos os campos");
+      return;
     }
 
-    function showLogin() {
-      document.getElementById("signup-box").classList.add("hidden");
-      document.getElementById("login-box").classList.remove("hidden");
+    if (invite !== "2025v01.15.320012334") {
+      alert("Código de convite inválido");
+      return;
     }
 
-    function showApp() {
-      document.getElementById("login-box").classList.add("hidden");
-      document.getElementById("signup-box").classList.add("hidden");
-      document.getElementById("app-box").classList.remove("hidden");
+    if (!/^(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(password)) {
+      alert("Senha precisa ter 8 caracteres, 1 maiúscula e 1 minúscula");
+      return;
     }
 
-    // 🔐 LOGIN
-    async function login() {
-      const email = document.getElementById("login-email").value;
-      const password = document.getElementById("login-password").value;
-
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
-
-      document.getElementById("login-status").innerText =
-        error ? error.message : "Logado com sucesso!";
-
-      if (!error) showApp();
-    }
-
-    // 📝 CADASTRO
-    async function signup() {
-      const email = document.getElementById("signup-email").value;
-      const password = document.getElementById("signup-password").value;
-
-      if (!email || !password) {
-        alert("Preencha email e senha");
-        return;
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { name, phone }
       }
-
-      const { error } = await supabase.auth.signUp({
-        email,
-        password
-      });
-
-      document.getElementById("signup-status").innerText =
-        error ? error.message : "Conta criada! Faça login.";
-
-      if (!error) showLogin();
-    }
-
-    // 🚪 LOGOUT
-    async function logout() {
-      await supabase.auth.signOut();
-      location.reload();
-    }
-
-    // 🔄 AUTO LOGIN
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) showApp();
     });
-  </script>
+
+    if (error) {
+      alert(error.message);
+    } else {
+      alert("Conta criada com sucesso!");
+      toggle();
+    }
+  }
+
+  async function login() {
+    const email = document.getElementById("login-email").value;
+    const password = document.getElementById("login-password").value;
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      alert(error.message);
+    } else {
+      alert("Login realizado!");
+      // Próximo passo: redirecionar para Home
+    }
+  }
+
+  const nameInput = document.getElementById("name");
+  const emailInput = document.getElementById("email");
+  const phoneInput = document.getElementById("phone");
+  const passwordInput = document.getElementById("password");
+  const inviteInput = document.getElementById("invite");
+</script>
 
 </body>
 </html>
