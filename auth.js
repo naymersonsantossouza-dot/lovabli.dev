@@ -6,7 +6,19 @@ const supabase = window.supabase.createClient(
   SUPABASE_ANON_KEY
 );
 
+function showSignup() {
+  document.getElementById("login-box").classList.add("hidden");
+  document.getElementById("signup-box").classList.remove("hidden");
+}
+
+function showLogin() {
+  document.getElementById("signup-box").classList.add("hidden");
+  document.getElementById("login-box").classList.remove("hidden");
+}
+
 async function signup() {
+  alert("clicou em cadastrar"); // DEBUG
+
   const email = document.getElementById("signup-email").value;
   const password = document.getElementById("signup-password").value;
 
@@ -15,7 +27,7 @@ async function signup() {
     return;
   }
 
-  const { data, error } = await supabase.auth.signUp({
+  const { error } = await supabase.auth.signUp({
     email,
     password
   });
@@ -24,5 +36,6 @@ async function signup() {
     alert(error.message);
   } else {
     alert("Conta criada! Faça login.");
+    showLogin();
   }
 }
