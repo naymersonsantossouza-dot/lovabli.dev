@@ -1,213 +1,165 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Finance</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<title>Finance</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Supabase -->
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
-  <!-- Icons -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+:root {
+  --bg:#020617;
+  --card:#020617;
+  --primary:#2563eb;
+  --text:#e5e7eb;
+  --muted:#94a3b8;
+  --radius:18px;
+}
 
-  <style>
-    :root {
-      --bg: #0f172a;
-      --card: #020617;
-      --primary: #2563eb;
-      --text: #e5e7eb;
-      --muted: #94a3b8;
-      --radius: 18px;
-    }
+body {
+  margin:0;
+  min-height:100vh;
+  background:linear-gradient(180deg,#020617,#0f172a);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:Arial, sans-serif;
+  color:var(--text);
+}
 
-    * {
-      box-sizing: border-box;
-      transition: all .3s ease;
-    }
+.card {
+  background:var(--card);
+  width:100%;
+  max-width:420px;
+  padding:28px;
+  border-radius:var(--radius);
+  box-shadow:0 20px 60px rgba(0,0,0,.4);
+  animation:fade .4s ease;
+}
 
-    body {
-      margin: 0;
-      font-family: Inter, Arial, sans-serif;
-      background: linear-gradient(180deg, #020617, #0f172a);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+@keyframes fade {
+  from {opacity:0; transform:translateY(20px);}
+  to {opacity:1; transform:translateY(0);}
+}
 
-    .card {
-      background: var(--card);
-      width: 100%;
-      max-width: 420px;
-      padding: 28px;
-      border-radius: var(--radius);
-      box-shadow: 0 20px 60px rgba(0,0,0,.4);
-      animation: fadeUp .5s ease;
-    }
+h1 {
+  text-align:center;
+  margin-bottom:20px;
+}
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+input {
+  width:100%;
+  padding:14px;
+  margin-bottom:12px;
+  border-radius:12px;
+  border:none;
+  background:#020617;
+  outline:1px solid #1e293b;
+  color:var(--text);
+}
 
-    h1 {
-      text-align: center;
-      margin-bottom: 24px;
-      font-size: 1.6rem;
-    }
+button {
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:none;
+  background:var(--primary);
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+}
 
-    input {
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      border: none;
-      margin-bottom: 12px;
-      background: #020617;
-      color: var(--text);
-      outline: 1px solid #1e293b;
-    }
+.link {
+  margin-top:14px;
+  text-align:center;
+  cursor:pointer;
+  color:var(--muted);
+}
 
-    input:focus {
-      outline: 1px solid var(--primary);
-    }
+.link span {
+  color:#60a5fa;
+  font-weight:600;
+}
 
-    button {
-      width: 100%;
-      padding: 14px;
-      border-radius: 14px;
-      border: none;
-      background: var(--primary);
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 6px;
-    }
-
-    button:hover {
-      filter: brightness(1.1);
-    }
-
-    .link {
-      text-align: center;
-      margin-top: 16px;
-      color: var(--muted);
-      cursor: pointer;
-    }
-
-    .link span {
-      color: #60a5fa;
-      font-weight: 600;
-    }
-
-    .hidden {
-      display: none;
-    }
-  </style>
+.hidden { display:none; }
+</style>
 </head>
 
 <body>
 
-  <!-- LOGIN -->
-  <div class="card" id="login">
-    <h1>Entrar</h1>
-    <input id="login-email" type="email" placeholder="E-mail" />
-    <input id="login-password" type="password" placeholder="Senha" />
-    <button onclick="login()">Entrar</button>
-    <div class="link" onclick="toggle()">
-      Não tem conta? <span>Criar conta</span>
-    </div>
-  </div>
+<div class="card" id="login">
+  <h1>Entrar</h1>
+  <input id="login-email" placeholder="E-mail">
+  <input id="login-password" type="password" placeholder="Senha">
+  <button onclick="login()">Entrar</button>
+  <div class="link" onclick="toggle()">Não tem conta? <span>Criar conta</span></div>
+</div>
 
-  <!-- CADASTRO -->
-  <div class="card hidden" id="signup">
-    <h1>Criar conta</h1>
-    <input id="name" placeholder="Nome completo" />
-    <input id="email" type="email" placeholder="E-mail" />
-    <input id="phone" placeholder="Telefone (xx xxxxx-xxxx)" />
-    <input id="password" type="password" placeholder="Senha segura" />
-    <input id="invite" placeholder="Código de convite" />
-    <button onclick="signup()">Criar conta</button>
-    <div class="link" onclick="toggle()">
-      Já tem conta? <span>Entrar</span>
-    </div>
-  </div>
+<div class="card hidden" id="signup">
+  <h1>Criar conta</h1>
+  <input id="name" placeholder="Nome">
+  <input id="email" placeholder="E-mail">
+  <input id="phone" placeholder="Telefone">
+  <input id="password" type="password" placeholder="Senha">
+  <input id="invite" placeholder="Código de convite">
+  <button onclick="signup()">Criar conta</button>
+  <div class="link" onclick="toggle()">Já tem conta? <span>Entrar</span></div>
+</div>
 
 <script>
-  const SUPABASE_URL = "https://ofmtqwwnhknnjpbddduj.supabase.co";
-  const SUPABASE_ANON_KEY = "sb_publishable_O-AwL40Ai_GDQgiRnSfmFw_j-FfpFZM";
+const supabase = window.supabase.createClient(
+  "https://ofmtqwwnhknnjpbddduj.supabase.co",
+  "sb_publishable_O-AwL40Ai_GDQgiRnSfmFw_j-FfpFZM"
+);
 
-  const supabase = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
+function toggle() {
+  login.classList.toggle("hidden");
+  signup.classList.toggle("hidden");
+}
 
-  function toggle() {
-    document.getElementById("login").classList.toggle("hidden");
-    document.getElementById("signup").classList.toggle("hidden");
+async function signup() {
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const phone = document.getElementById("phone").value;
+  const password = document.getElementById("password").value;
+  const invite = document.getElementById("invite").value;
+
+  if (!name || !email || !phone || !password || !invite) {
+    alert("Preencha tudo");
+    return;
   }
 
-  async function signup() {
-    const name = nameInput.value;
-    const email = emailInput.value;
-    const phone = phoneInput.value;
-    const password = passwordInput.value;
-    const invite = inviteInput.value;
-
-    if (!name || !email || !phone || !password || !invite) {
-      alert("Preencha todos os campos");
-      return;
-    }
-
-    if (invite !== "2025v01.15.320012334") {
-      alert("Código de convite inválido");
-      return;
-    }
-
-    if (!/^(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(password)) {
-      alert("Senha precisa ter 8 caracteres, 1 maiúscula e 1 minúscula");
-      return;
-    }
-
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { name, phone }
-      }
-    });
-
-    if (error) {
-      alert(error.message);
-    } else {
-      alert("Conta criada com sucesso!");
-      toggle();
-    }
+  if (invite !== "2025v01.15.320012334") {
+    alert("Código inválido");
+    return;
   }
 
-  async function login() {
-    const email = document.getElementById("login-email").value;
-    const password = document.getElementById("login-password").value;
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options:{ data:{ name, phone } }
+  });
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
-
-    if (error) {
-      alert(error.message);
-    } else {
-      alert("Login realizado!");
-      // Próximo passo: redirecionar para Home
-    }
+  if (error) alert(error.message);
+  else {
+    alert("Conta criada!");
+    toggle();
   }
+}
 
-  const nameInput = document.getElementById("name");
-  const emailInput = document.getElementById("email");
-  const phoneInput = document.getElementById("phone");
-  const passwordInput = document.getElementById("password");
-  const inviteInput = document.getElementById("invite");
+async function login() {
+  const email = document.getElementById("login-email").value;
+  const password = document.getElementById("login-password").value;
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) alert(error.message);
+  else alert("Login OK");
+}
 </script>
 
 </body>
