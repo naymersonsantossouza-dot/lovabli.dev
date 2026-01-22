@@ -1,81 +1,190 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Finance App</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600&display=swap" rel="stylesheet">
-<style>
-body {
-  font-family: Lexend, sans-serif;
-  background: #0f172a;
-  color: #f1f5f9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-}
-.box {
-  background: #1e293b;
-  padding: 30px;
-  border-radius: 20px;
-  width: 100%;
-  max-width: 380px;
-}
-input, button {
-  width: 100%;
-  padding: 14px;
-  margin-bottom: 12px;
-  border-radius: 12px;
-  border: none;
-}
-button {
-  background: #4580ff;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-}
-.link {
-  font-size: 13px;
-  text-align: center;
-  cursor: pointer;
-  color: #94a3b8;
-}
-.hidden { display: none; }
-</style>
+  <meta charset="UTF-8" />
+  <title>App Financeiro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600&display=swap');
+
+    body {
+      font-family: 'Lexend', sans-serif;
+      background: #0f172a;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .box {
+      background: #020617;
+      padding: 30px;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 360px;
+      box-shadow: 0 20px 40px rgba(0,0,0,.5);
+      animation: fade .4s ease;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid #334155;
+      background: #020617;
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      background: #2563eb;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+
+    button.secondary {
+      background: #1e293b;
+    }
+
+    .status {
+      font-size: 13px;
+      text-align: center;
+      margin-top: 10px;
+      opacity: .8;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="box" id="login">
-  <h2>Login</h2>
-  <input id="login-email" placeholder="Email">
-  <input id="login-password" type="password" placeholder="Senha">
-  <button onclick="login()">Entrar</button>
-  <div class="link" onclick="showSignup()">Criar conta</div>
-  <div class="link" onclick="showReset()">Esqueci minha senha</div>
-</div>
+  <!-- LOGIN -->
+  <div class="box" id="login-box">
+    <h2>Login</h2>
+    <input id="login-email" type="email" placeholder="Email">
+    <input id="login-password" type="password" placeholder="Senha">
+    <button onclick="login()">Entrar</button>
+    <button class="secondary" onclick="showSignup()">Criar conta</button>
+    <div class="status" id="login-status"></div>
+  </div>
 
-<div class="box hidden" id="signup">
-  <h2>Cadastro</h2>
-  <input id="signup-name" placeholder="Nome completo">
-  <input id="signup-email" placeholder="Email">
-  <input id="signup-phone" placeholder="Telefone (xx xxxxx-xxxx)">
-  <input id="signup-password" type="password" placeholder="Senha">
-  <input id="signup-code" placeholder="Código de convite">
-  <button onclick="signup()">Cadastrar</button>
-  <div class="link" onclick="showLogin()">Voltar</div>
-</div>
+  <!-- CADASTRO -->
+  <div class="box hidden" id="signup-box">
+    <h2>Criar conta</h2>
+    <input id="signup-email" type="email" placeholder="Email">
+    <input id="signup-password" type="password" placeholder="Senha">
+    <button onclick="signup()">Cadastrar</button>
+    <button class="secondary" onclick="showLogin()">Voltar</button>
+    <div class="status" id="signup-status"></div>
+  </div>
 
-<div class="box hidden" id="reset">
-  <h2>Recuperar Senha</h2>
-  <input id="reset-email" placeholder="Email">
-  <button onclick="resetPassword()">Enviar link</button>
-  <div class="link" onclick="showLogin()">Voltar</div>
-</div>
+  <!-- DASHBOARD -->
+  <div class="box hidden" id="app-box">
+    <h2>Bem-vindo 👋</h2>
+    <p style="text-align:center;font-size:14px;">Login realizado com sucesso</p>
+    <button onclick="logout()">Sair</button>
+  </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="auth.js"></script>
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    // 🔑 CONFIGURAÇÃO SUPABASE
+    const SUPABASE_URL = "https://ofmtqwwnhknnjpbddduj.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_O-AwL40Ai_GDQgiRnSfmFw_j-FfpFZM";
+
+    const supabase = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
+
+    // 🔁 TELAS
+    function showSignup() {
+      document.getElementById("login-box").classList.add("hidden");
+      document.getElementById("signup-box").classList.remove("hidden");
+    }
+
+    function showLogin() {
+      document.getElementById("signup-box").classList.add("hidden");
+      document.getElementById("login-box").classList.remove("hidden");
+    }
+
+    function showApp() {
+      document.getElementById("login-box").classList.add("hidden");
+      document.getElementById("signup-box").classList.add("hidden");
+      document.getElementById("app-box").classList.remove("hidden");
+    }
+
+    // 🔐 LOGIN
+    async function login() {
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-password").value;
+
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      document.getElementById("login-status").innerText =
+        error ? error.message : "Logado com sucesso!";
+
+      if (!error) showApp();
+    }
+
+    // 📝 CADASTRO
+    async function signup() {
+      const email = document.getElementById("signup-email").value;
+      const password = document.getElementById("signup-password").value;
+
+      if (!email || !password) {
+        alert("Preencha email e senha");
+        return;
+      }
+
+      const { error } = await supabase.auth.signUp({
+        email,
+        password
+      });
+
+      document.getElementById("signup-status").innerText =
+        error ? error.message : "Conta criada! Faça login.";
+
+      if (!error) showLogin();
+    }
+
+    // 🚪 LOGOUT
+    async function logout() {
+      await supabase.auth.signOut();
+      location.reload();
+    }
+
+    // 🔄 AUTO LOGIN
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) showApp();
+    });
+  </script>
 
 </body>
 </html>
