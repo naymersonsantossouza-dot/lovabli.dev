@@ -2,249 +2,222 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Lovabli • Finance</title>
+<title>Finance App</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- FONT -->
 <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
 :root {
-  --bg-body:#f0f4f8;
-  --bg-card:#ffffff;
-  --text-main:#2c3e50;
-  --primary:#4580ff;
-  --success:#27ae60;
-  --danger:#ff4d4d;
-  --input-bg:#f8fafc;
-  --input-border:#edf2f7;
-  --radius:20px;
+  --bg: #0f172a;
+  --card: #1e293b;
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --primary: #4580ff;
+  --success: #22c55e;
+  --danger: #ef4444;
+  --radius: 18px;
 }
-
-.dark {
-  --bg-body:#0f172a;
-  --bg-card:#1e293b;
-  --text-main:#f1f5f9;
-  --input-bg:#0f172a;
-  --input-border:#334155;
-}
-
-* { box-sizing:border-box }
 
 body {
-  font-family:'Lexend',sans-serif;
-  background:var(--bg-body);
-  color:var(--text-main);
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  transition:.4s;
+  margin: 0;
+  font-family: 'Lexend', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: background .4s ease;
 }
 
-.box {
-  background:var(--bg-card);
-  width:100%;
-  max-width:380px;
-  padding:32px;
-  border-radius:var(--radius);
-  box-shadow:0 10px 30px rgba(0,0,0,.1);
-  animation:fade .5s ease;
+/* HEADER */
+header {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-h2 {
-  text-align:center;
-  margin-bottom:22px;
+header h2 {
+  margin: 0;
 }
 
-input {
-  width:100%;
-  padding:14px 16px;
-  margin-bottom:14px;
-  border-radius:12px;
-  border:2px solid var(--input-border);
-  background:var(--input-bg);
-  color:var(--text-main);
-  transition:.3s;
+.header-actions {
+  display: flex;
+  gap: 10px;
 }
 
-input:focus {
-  outline:none;
-  border-color:var(--primary);
-  box-shadow:0 0 0 3px rgba(69,128,255,.25);
+select, button {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: none;
+  font-family: 'Lexend';
 }
 
-button {
-  width:100%;
-  padding:14px;
-  border-radius:14px;
-  border:none;
-  background:var(--primary);
-  color:white;
-  font-weight:600;
-  cursor:pointer;
-  transition:.3s;
-}
-
-button:hover {
-  transform:scale(1.05);
-  box-shadow:0 10px 25px rgba(69,128,255,.4);
+button.primary {
+  background: var(--primary);
+  color: white;
 }
 
 button.secondary {
-  background:#1e293b;
-  margin-top:8px;
+  background: #334155;
+  color: white;
+}
+
+/* CARDS */
+.cards {
+  display: flex;
+  gap: 15px;
+  padding: 0 20px;
+}
+
+.card {
+  flex: 1;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 18px;
+  text-align: center;
+  animation: fadeUp .4s ease;
+}
+
+.card h4 {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.card p {
+  margin: 5px 0 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.card.receitas p { color: var(--success); }
+.card.despesas p { color: var(--danger); }
+.card.saldo p { color: var(--primary); }
+
+/* LISTA */
+.list {
+  padding: 20px;
+}
+
+.item {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform .3s ease;
+}
+
+.item-info {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .status {
-  text-align:center;
-  font-size:13px;
-  margin-top:12px;
-  opacity:.8;
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 10px;
 }
 
-.hidden { display:none }
+.pago { background: var(--success); }
+.pendente { background: var(--danger); }
 
-.toggle-theme {
-  position:absolute;
-  top:20px;
-  right:20px;
-  cursor:pointer;
-  font-size:12px;
-  opacity:.7;
+/* EDIT */
+.edit-box {
+  display: none;
+  margin-top: 10px;
+  animation: fadeUp .3s ease;
 }
 
-@keyframes fade {
-  from { opacity:0; transform:translateY(10px) }
-  to { opacity:1; transform:translateY(0) }
+.edit-box input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  margin-bottom: 6px;
+}
+
+/* MENU */
+.menu {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--primary);
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  color: white;
+  font-size: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>
 </head>
 
 <body>
 
-<div class="toggle-theme" onclick="toggleTheme()">🌙 Tema</div>
+<header>
+  <h2>Olá, Nay 👋</h2>
+  <div class="header-actions">
+    <select>
+      <option>Janeiro</option>
+      <option>Fevereiro</option>
+    </select>
+    <button class="primary">Novo Gasto</button>
+    <button class="secondary">Tema</button>
+    <button class="secondary">Sair</button>
+  </div>
+</header>
 
-<!-- LOGIN -->
-<div class="box" id="login-box">
-  <h2>Login</h2>
-  <input id="login-email" placeholder="Email">
-  <input id="login-password" type="password" placeholder="Senha">
-  <button onclick="login()">Entrar</button>
-  <button class="secondary" onclick="showSignup()">Criar conta</button>
-  <div class="status" id="login-status"></div>
-</div>
+<section class="cards">
+  <div class="card receitas">
+    <h4>Receitas</h4>
+    <p>R$ 3.200</p>
+  </div>
+  <div class="card despesas">
+    <h4>Despesas</h4>
+    <p>R$ 1.850</p>
+  </div>
+  <div class="card saldo">
+    <h4>Saldo</h4>
+    <p>R$ 1.350</p>
+  </div>
+</section>
 
-<!-- SIGNUP -->
-<div class="box hidden" id="signup-box">
-  <h2>Criar conta</h2>
-  <input id="signup-email" placeholder="Email">
-  <input id="signup-password" type="password" placeholder="Senha">
-  <button onclick="signup()">Cadastrar</button>
-  <button class="secondary" onclick="showLogin()">Voltar</button>
-  <div class="status" id="signup-status"></div>
-</div>
+<section class="list">
+  <div class="item">
+    <div class="item-info">
+      <span>🍔</span>
+      <strong>Alimentação</strong>
+    </div>
+    <div>
+      <span class="status pendente">Pendente</span>
+      <button onclick="toggleEdit(this)">Editar</button>
+    </div>
+  </div>
 
-<!-- APP -->
-<div class="box hidden" id="app-box">
-  <h2>Dashboard</h2>
-  <input id="title" placeholder="Descrição">
-  <input id="amount" type="number" placeholder="Valor">
-  <button onclick="addFinance()">Adicionar</button>
-  <button class="secondary" onclick="logout()">Sair</button>
-  <div class="status" id="app-status"></div>
-</div>
+  <div class="edit-box">
+    <input placeholder="Editar nome">
+    <input placeholder="Editar valor">
+  </div>
+</section>
 
-<!-- SUPABASE -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<div class="menu">☰</div>
 
 <script>
-const SUPABASE_URL = "https://ofmtqwwnhknnjpbddduj.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_O-AwL40Ai_GDQgiRnSfmFw_j-FfpFZM";
-
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
-
-/* UI */
-function showSignup() {
-  loginBox().classList.add("hidden");
-  signupBox().classList.remove("hidden");
-}
-
-function showLogin() {
-  signupBox().classList.add("hidden");
-  loginBox().classList.remove("hidden");
-}
-
-function showApp() {
-  loginBox().classList.add("hidden");
-  signupBox().classList.add("hidden");
-  appBox().classList.remove("hidden");
-}
-
-const loginBox = () => document.getElementById("login-box");
-const signupBox = () => document.getElementById("signup-box");
-const appBox = () => document.getElementById("app-box");
-
-/* AUTH */
-async function login() {
-  const email = loginEmail().value;
-  const password = loginPassword().value;
-
-  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-  loginStatus().innerText = error ? error.message : "Login realizado!";
-  if (!error) showApp();
-}
-
-async function signup() {
-  const email = signupEmail().value;
-  const password = signupPassword().value;
-
-  const { error } = await supabaseClient.auth.signUp({ email, password });
-  signupStatus().innerText = error ? error.message : "Conta criada!";
-}
-
-async function logout() {
-  await supabaseClient.auth.signOut();
-  location.reload();
-}
-
-/* DATA */
-async function addFinance() {
-  const title = titleInput().value;
-  const amount = amountInput().value;
-
-  const { data } = await supabaseClient.auth.getUser();
-  const user = data.user;
-
-  const { error } = await supabaseClient
-    .from("finances")
-    .insert({ user_id:user.id, title, amount });
-
-  appStatus().innerText = error ? error.message : "Despesa adicionada!";
-}
-
-/* HELPERS */
-const loginEmail = () => document.getElementById("login-email");
-const loginPassword = () => document.getElementById("login-password");
-const signupEmail = () => document.getElementById("signup-email");
-const signupPassword = () => document.getElementById("signup-password");
-const titleInput = () => document.getElementById("title");
-const amountInput = () => document.getElementById("amount");
-const loginStatus = () => document.getElementById("login-status");
-const signupStatus = () => document.getElementById("signup-status");
-const appStatus = () => document.getElementById("app-status");
-
-/* AUTO LOGIN */
-supabaseClient.auth.getSession().then(({ data }) => {
-  if (data.session) showApp();
-});
-
-/* THEME */
-function toggleTheme() {
-  document.body.classList.toggle("dark");
+function toggleEdit(btn) {
+  const edit = btn.closest('.item').nextElementSibling;
+  edit.style.display = edit.style.display === 'block' ? 'none' : 'block';
 }
 </script>
 
