@@ -4,222 +4,78 @@
 <meta charset="UTF-8">
 <title>Finance App</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600&display=swap" rel="stylesheet">
-
 <style>
-:root {
-  --bg: #0f172a;
-  --card: #1e293b;
-  --text: #f1f5f9;
-  --muted: #94a3b8;
-  --primary: #4580ff;
-  --success: #22c55e;
-  --danger: #ef4444;
-  --radius: 18px;
-}
-
 body {
-  margin: 0;
-  font-family: 'Lexend', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  transition: background .4s ease;
-}
-
-/* HEADER */
-header {
-  padding: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-header h2 {
-  margin: 0;
-}
-
-.header-actions {
-  display: flex;
-  gap: 10px;
-}
-
-select, button {
-  padding: 10px 14px;
-  border-radius: 12px;
-  border: none;
-  font-family: 'Lexend';
-}
-
-button.primary {
-  background: var(--primary);
-  color: white;
-}
-
-button.secondary {
-  background: #334155;
-  color: white;
-}
-
-/* CARDS */
-.cards {
-  display: flex;
-  gap: 15px;
-  padding: 0 20px;
-}
-
-.card {
-  flex: 1;
-  background: var(--card);
-  border-radius: var(--radius);
-  padding: 18px;
-  text-align: center;
-  animation: fadeUp .4s ease;
-}
-
-.card h4 {
-  margin: 0;
-  font-size: 13px;
-  color: var(--muted);
-}
-
-.card p {
-  margin: 5px 0 0;
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.card.receitas p { color: var(--success); }
-.card.despesas p { color: var(--danger); }
-.card.saldo p { color: var(--primary); }
-
-/* LISTA */
-.list {
-  padding: 20px;
-}
-
-.item {
-  background: var(--card);
-  border-radius: var(--radius);
-  padding: 16px;
-  margin-bottom: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: transform .3s ease;
-}
-
-.item-info {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.status {
-  font-size: 11px;
-  padding: 5px 10px;
-  border-radius: 10px;
-}
-
-.pago { background: var(--success); }
-.pendente { background: var(--danger); }
-
-/* EDIT */
-.edit-box {
-  display: none;
-  margin-top: 10px;
-  animation: fadeUp .3s ease;
-}
-
-.edit-box input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-  margin-bottom: 6px;
-}
-
-/* MENU */
-.menu {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: var(--primary);
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  color: white;
-  font-size: 26px;
+  font-family: Lexend, sans-serif;
+  background: #0f172a;
+  color: #f1f5f9;
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 100vh;
+}
+.box {
+  background: #1e293b;
+  padding: 30px;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 380px;
+}
+input, button {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  border: none;
+}
+button {
+  background: #4580ff;
+  color: white;
+  font-weight: 600;
   cursor: pointer;
 }
-
-/* ANIMATIONS */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+.link {
+  font-size: 13px;
+  text-align: center;
+  cursor: pointer;
+  color: #94a3b8;
 }
+.hidden { display: none; }
 </style>
 </head>
 
 <body>
 
-<header>
-  <h2>Olá, Nay 👋</h2>
-  <div class="header-actions">
-    <select>
-      <option>Janeiro</option>
-      <option>Fevereiro</option>
-    </select>
-    <button class="primary">Novo Gasto</button>
-    <button class="secondary">Tema</button>
-    <button class="secondary">Sair</button>
-  </div>
-</header>
+<div class="box" id="login">
+  <h2>Login</h2>
+  <input id="login-email" placeholder="Email">
+  <input id="login-password" type="password" placeholder="Senha">
+  <button onclick="login()">Entrar</button>
+  <div class="link" onclick="showSignup()">Criar conta</div>
+  <div class="link" onclick="showReset()">Esqueci minha senha</div>
+</div>
 
-<section class="cards">
-  <div class="card receitas">
-    <h4>Receitas</h4>
-    <p>R$ 3.200</p>
-  </div>
-  <div class="card despesas">
-    <h4>Despesas</h4>
-    <p>R$ 1.850</p>
-  </div>
-  <div class="card saldo">
-    <h4>Saldo</h4>
-    <p>R$ 1.350</p>
-  </div>
-</section>
+<div class="box hidden" id="signup">
+  <h2>Cadastro</h2>
+  <input id="signup-name" placeholder="Nome completo">
+  <input id="signup-email" placeholder="Email">
+  <input id="signup-phone" placeholder="Telefone (xx xxxxx-xxxx)">
+  <input id="signup-password" type="password" placeholder="Senha">
+  <input id="signup-code" placeholder="Código de convite">
+  <button onclick="signup()">Cadastrar</button>
+  <div class="link" onclick="showLogin()">Voltar</div>
+</div>
 
-<section class="list">
-  <div class="item">
-    <div class="item-info">
-      <span>🍔</span>
-      <strong>Alimentação</strong>
-    </div>
-    <div>
-      <span class="status pendente">Pendente</span>
-      <button onclick="toggleEdit(this)">Editar</button>
-    </div>
-  </div>
+<div class="box hidden" id="reset">
+  <h2>Recuperar Senha</h2>
+  <input id="reset-email" placeholder="Email">
+  <button onclick="resetPassword()">Enviar link</button>
+  <div class="link" onclick="showLogin()">Voltar</div>
+</div>
 
-  <div class="edit-box">
-    <input placeholder="Editar nome">
-    <input placeholder="Editar valor">
-  </div>
-</section>
-
-<div class="menu">☰</div>
-
-<script>
-function toggleEdit(btn) {
-  const edit = btn.closest('.item').nextElementSibling;
-  edit.style.display = edit.style.display === 'block' ? 'none' : 'block';
-}
-</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
 
 </body>
 </html>
