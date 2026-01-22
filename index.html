@@ -4,10 +4,106 @@
 <meta charset="UTF-8">
 <title>Finance</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 alert("JS CARREGOU");
+
+const SUPABASE_URL = "https://ofmtqwwnhknnjpbddduj.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_O-AwL40Ai_GDQgiRnSfmFw_j-FfpFZM";
+
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+/* =======================
+   TROCA DE TELAS
+======================= */
+window.showSignup = function () {
+  document.getElementById("login-box").classList.add("hidden");
+  document.getElementById("signup-box").classList.remove("hidden");
+};
+
+window.showLogin = function () {
+  document.getElementById("signup-box").classList.add("hidden");
+  document.getElementById("login-box").classList.remove("hidden");
+};
+
+/* =======================
+   LOGIN
+======================= */
+window.login = async function () {
+  const email = document.getElementById("login-email").value;
+  const password = document.getElementById("login-password").value;
+
+  if (!email || !password) {
+    alert("Preencha email e senha");
+    return;
+  }
+
+  const { error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    alert(error.message);
+  } else {
+    alert("Login realizado com sucesso!");
+    showApp();
+  }
+};
+
+/* =======================
+   CADASTRO
+======================= */
+window.signup = async function () {
+  const email = document.getElementById("signup-email").value;
+  const password = document.getElementById("signup-password").value;
+
+  if (!email || !password) {
+    alert("Preencha email e senha");
+    return;
+  }
+
+  const { error } = await supabaseClient.auth.signUp({
+    email,
+    password
+  });
+
+  if (error) {
+    alert(error.message);
+  } else {
+    alert("Conta criada! Faça login.");
+    showLogin();
+  }
+};
+
+/* =======================
+   LOGOUT
+======================= */
+window.logout = async function () {
+  await supabaseClient.auth.signOut();
+  location.reload();
+};
+
+/* =======================
+   APP
+======================= */
+window.showApp = function () {
+  document.getElementById("login-box").classList.add("hidden");
+  document.getElementById("signup-box").classList.add("hidden");
+  document.getElementById("app-box").classList.remove("hidden");
+};
+
+/* =======================
+   AUTO LOGIN
+======================= */
+supabaseClient.auth.getSession().then(({ data }) => {
+  if (data.session) showApp();
+});
 </script>
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
 <style>
 :root {
